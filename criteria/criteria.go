@@ -43,6 +43,7 @@ type ExpressionVisitor interface {
 	And(a *AndExpression) interface{}
 	Or(a *OrExpression) interface{}
 	Equals(e *EqualsExpression) interface{}
+	Matches(e *MatchesExpression) interface{}
 	Parameter(v *ParameterExpression) interface{}
 	Literal(c *LiteralExpression) interface{}
 }
@@ -199,4 +200,18 @@ func (t *EqualsExpression) Accept(visitor ExpressionVisitor) interface{} {
 // Equals constructs an EqualsExpression
 func Equals(left Expression, right Expression) Expression {
 	return reparent(&EqualsExpression{binaryExpression{expression{}, left, right}})
+}
+
+type MatchesExpression struct {
+	binaryExpression
+}
+
+// Accept implements ExpressionVisitor
+func (t *MatchesExpression) Accept(visitor ExpressionVisitor) interface{} {
+	return visitor.Matches(t)
+}
+
+// Equals constructs an EqualsExpression
+func Matches(left Expression, right Expression) Expression {
+	return reparent(&MatchesExpression{binaryExpression{expression{}, left, right}})
 }

@@ -95,6 +95,16 @@ func (c *expressionCompiler) Equals(e *criteria.EqualsExpression) interface{} {
 	return c.binary(e, "=")
 }
 
+func (c *expressionCompiler) Matches(e *criteria.MatchesExpression) interface{} {
+	left := e.Left().Accept(c)
+	right := e.Right().Accept(c)
+	if left != nil && right != nil {
+		return "(to_tsvector('english', " + left.(string) + ") @@ to_tsquery('english', " + right.(string) + "))"
+	}
+	// something went wrong in either compilation, errors have been accumulated
+	return nil
+}
+
 func (c *expressionCompiler) Parameter(v *criteria.ParameterExpression) interface{} {
 	c.err = append(c.err, fmt.Errorf("Parameter expression not supported"))
 	return nil

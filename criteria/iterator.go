@@ -27,6 +27,10 @@ func (i *postOrderIterator) Equals(exp *EqualsExpression) interface{} {
 	return i.binary(exp)
 }
 
+func (i *postOrderIterator) Matches(exp *MatchesExpression) interface{} {
+	return i.binary(exp)
+}
+
 func (i *postOrderIterator) Parameter(exp *ParameterExpression) interface{} {
 	return i.visit(exp)
 }
